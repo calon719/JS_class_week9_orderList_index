@@ -27,7 +27,15 @@ current: orderList
     <div id="productRevenue"></div>
   </section>
 
-  <p class="justify-center text-lg py-24" data-hasOrder="true">尚未有任何訂單</p>
+  <div class="loading py-12 justify-center" data-loading="true">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <p class="justify-center text-lg py-24" data-hasOrder="false">尚未有任何訂單</p>
   <section class="orderTable flex flex-col mb-27" data-hasOrder="false">
     <button
       class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"
@@ -50,15 +58,7 @@ current: orderList
   </section>
 </div>
 
-<div class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-opacity-50 bg-dark flex justify-center items-center"
+<div class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-opacity-50 bg-dark justify-center items-center"
   data-popUp="false" data-js="popUpDiv">
-  <div class="bg-white border border-gray-400 rounded-lg p-8" data-js="popUpMsg">
-    <div class="popUp-body">
-      123
-    </div>
-    <div class="popUp-footer">
-      <button class="py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75">取消</button>
-      <button class="py-2 px-3 bg-info text-white rounded hover:opacity-75">確定</button>
-    </div>
-  </div>
+  <div class="bg-white border border-gray-400 rounded-lg p-8" data-js="popUpMsg"></div>
 </div>

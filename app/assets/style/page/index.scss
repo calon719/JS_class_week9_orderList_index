@@ -10,5 +10,12 @@
   @apply flex;
 }
 [data-popUp="false"]{
-  @apply hidden
+  @apply hidden;
+}
+
+[data-loading="true"]{
+  @apply flex;
+}
+[data-loading="false"]{
+  @apply hidden;
 }

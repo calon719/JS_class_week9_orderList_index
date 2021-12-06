@@ -2,5 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './vendor/pureCSSLoader';
 @import './helper/base';
 @import './page/index'

@@ -37,6 +37,9 @@ function getOrderData() {
     if (!errData.status) {
       console.log(errData.message);
     };
+  }).then(function () {
+    const loadingAnimation = document.querySelector('[data-loading]');
+    loadingAnimation.setAttribute('data-loading', false);
   });
 };
 

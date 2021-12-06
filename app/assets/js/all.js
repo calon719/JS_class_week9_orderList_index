@@ -14,13 +14,13 @@ const tokenObj = {
 const orderList = document.querySelector('[data-js="orderList"]');
 const orderTable = document.querySelector('.orderTable');
 const popUpDiv = document.querySelector('[data-js="popUpDiv"]');
+const chartEl = document.querySelector('#productRevenue');
 
 // data
 let orderData;
 
 // event
 orderTable.addEventListener('click', doubleCheckMsg);
-// orderTable.addEventListener('click', isPaid);
 
 init();
 
@@ -48,9 +48,11 @@ function renderOrderList() {
   if (orderData.length === 0) {
     msg.setAttribute('data-hasOrder', true);
     orderTable.setAttribute('data-hasOrder', false);
+    chartEl.setAttribute('data-hasOrder', false);
   } else {
     msg.setAttribute('data-hasOrder', false);
     orderTable.setAttribute('data-hasOrder', true);
+    chartEl.setAttribute('data-hasOrder', true);
 
     let str = '';
     orderData.forEach(function (item) {
@@ -84,8 +86,8 @@ function renderOrderList() {
     `
     });
     orderList.innerHTML = str;
+    renderChart();
   };
-  renderChart();
 };
 
 function deleteOrder(id, btnProp) {

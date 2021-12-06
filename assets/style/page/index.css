@@ -1,0 +1,21 @@
+/* purgecss start ignore */
+
+[data-hasOrder="true"] {
+  display: flex;
+}
+
+[data-hasOrder="false"] {
+  display: none;
+}
+
+[data-popUp="true"] {
+  display: flex;
+}
+
+[data-popUp="false"] {
+  display: none;
+}
+
+/* purgecss end ignore */
+
+/*# sourceMappingURL=index.css.map */

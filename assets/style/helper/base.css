@@ -1,6 +1,10 @@
+/* purgecss start ignore */
+
 body {
   font-family: 'Noto Sans TC', 'sans-serif';
   font-size: 16px;
 }
+
+/* purgecss end ignore */
 
 /*# sourceMappingURL=base.css.map */

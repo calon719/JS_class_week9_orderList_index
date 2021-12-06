@@ -67,10 +67,10 @@ function renderOrderList() {
       str += "\n        <tr class=\"border-b\">\n          <td class=\"p-1.5 border-r\">".concat(item.id, "</td>\n          <td class=\"p-1.5 border-r\">\n            <ul>\n              <li>").concat(item.user.name, "</li>\n              <li>").concat(item.user.tel, "</li>\n            </ul>\n          </td>\n          <td class=\"p-1.5 border-r\">").concat(item.user.address, "</td>\n          <td class=\"p-1.5 border-r\">").concat(item.user.email, "</td>\n          <td class=\"p-1.5 border-r\">\n            <ul>").concat(listStr, "</ul>\n          </td>\n          <td class=\"p-1.5 border-r text-center\">").concat(date, "</td>\n          <td class=\"p-1.5 border-r text-center\">\n            <a class=\"text-info underline\" href=\"#\" data-id=\"").concat(item.id, "\" data-js=\"paidBtn\">").concat(item.paid ? '已處理' : '未處理', "</a>\n          </td>\n          <td class=\"p-1.5 text-center\">\n            <button class=\"text-white bg-danger hover:opacity-70 rounded py-1.5 px-2.5\" data-js=\"deleteOrderBtn\" data-id=\"").concat(item.id, "\">\u522A\u9664</button>\n          </td>\n        </tr>\n    ");
     });
     orderList.innerHTML = str;
-    renderChart();
   }
 
   ;
+  renderChart();
 }
 
 ;

@@ -84,8 +84,8 @@ function renderOrderList() {
     `
     });
     orderList.innerHTML = str;
-    renderChart();
   };
+  renderChart();
 };
 
 function deleteOrder(id, btnProp) {

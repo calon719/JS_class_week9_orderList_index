@@ -40,6 +40,9 @@ function getOrderData() {
     }
 
     ;
+  }).then(function () {
+    var loadingAnimation = document.querySelector('[data-loading]');
+    loadingAnimation.setAttribute('data-loading', false);
   });
 }
 

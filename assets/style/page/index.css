@@ -16,6 +16,14 @@
   display: none;
 }
 
+[data-loading="true"] {
+  display: flex;
+}
+
+[data-loading="false"] {
+  display: none;
+}
+
 /* purgecss end ignore */
 
 /*# sourceMappingURL=index.css.map */

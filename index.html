@@ -47,7 +47,15 @@
     <div id="productRevenue"></div>
   </section>
 
-  <p class="justify-center text-lg py-24" data-hasOrder="true">尚未有任何訂單</p>
+  <div class="loading py-12 justify-center" data-loading="true">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <p class="justify-center text-lg py-24" data-hasOrder="false">尚未有任何訂單</p>
   <section class="orderTable flex flex-col mb-27" data-hasOrder="false">
     <button
       class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"

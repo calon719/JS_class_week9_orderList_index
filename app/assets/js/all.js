@@ -13,13 +13,14 @@ const tokenObj = {
 // DOM
 const orderList = document.querySelector('[data-js="orderList"]');
 const orderTable = document.querySelector('.orderTable');
+const popUpDiv = document.querySelector('[data-js="popUpDiv"]');
 
 // data
 let orderData;
 
 // event
-orderTable.addEventListener('click', deleteOrder);
-orderTable.addEventListener('click', isPaid);
+orderTable.addEventListener('click', doubleCheckMsg);
+// orderTable.addEventListener('click', isPaid);
 
 init();
 
@@ -31,7 +32,6 @@ function getOrderData() {
   axios.get(`${baseUrl}/${adminOrder_path}`, tokenObj).then(function (res) {
     orderData = res.data.orders;
     renderOrderList();
-    renderChart();
   }).catch(function (err) {
     let errData = err.response.data;
     if (!errData.status) {
@@ -41,45 +41,52 @@ function getOrderData() {
 };
 
 function renderOrderList() {
-  let str = '';
-  orderData.forEach(function (item) {
-    let listStr = ''
-    item.products.forEach(function (item) {
-      listStr += `<li>${item.title}</li>`
+  const msg = document.querySelector('p[data-hasOrder]');
+  if (orderData.length === 0) {
+    msg.setAttribute('data-hasOrder', true);
+    orderTable.setAttribute('data-hasOrder', false);
+  } else {
+    msg.setAttribute('data-hasOrder', false);
+    orderTable.setAttribute('data-hasOrder', true);
+
+    let str = '';
+    orderData.forEach(function (item) {
+      let listStr = ''
+      item.products.forEach(function (item) {
+        listStr += `<li>${item.title}</li>`
+      });
+      let date = new Date(item.createdAt * 1000).toLocaleDateString();
+      str += `
+        <tr class="border-b">
+          <td class="p-1.5 border-r">${item.id}</td>
+          <td class="p-1.5 border-r">
+            <ul>
+              <li>${item.user.name}</li>
+              <li>${item.user.tel}</li>
+            </ul>
+          </td>
+          <td class="p-1.5 border-r">${item.user.address}</td>
+          <td class="p-1.5 border-r">${item.user.email}</td>
+          <td class="p-1.5 border-r">
+            <ul>${listStr}</ul>
+          </td>
+          <td class="p-1.5 border-r text-center">${date}</td>
+          <td class="p-1.5 border-r text-center">
+            <a class="text-info underline" href="#" data-id="${item.id}" data-js="paidBtn">${item.paid ? '已處理' : '未處理'}</a>
+          </td>
+          <td class="p-1.5 text-center">
+            <button class="text-white bg-danger hover:opacity-70 rounded py-1.5 px-2.5" data-js="deleteOrderBtn" data-id="${item.id}">刪除</button>
+          </td>
+        </tr>
+    `
     });
-    let date = new Date(item.createdAt * 1000).toLocaleDateString();
-    str += `
-      <tr class="border-b">
-        <td class="p-1.5 border-r">${item.id}</td>
-        <td class="p-1.5 border-r">
-          <ul>
-            <li>${item.user.name}</li>
-            <li>${item.user.tel}</li>
-          </ul>
-        </td>
-        <td class="p-1.5 border-r">${item.user.address}</td>
-        <td class="p-1.5 border-r">${item.user.email}</td>
-        <td class="p-1.5 border-r">
-          <ul>${listStr}</ul>
-        </td>
-        <td class="p-1.5 border-r text-center">${date}</td>
-        <td class="p-1.5 border-r text-center">
-          <a class="text-info underline" href="#" data-id="${item.id}" data-js="paidBtn">${item.paid ? '已處理' : '未處理'}</a>
-        </td>
-        <td class="p-1.5 text-center">
-          <button class="text-white bg-danger hover:opacity-70 rounded py-1.5 px-2.5" data-js="deleteOrderBtn" data-id="${item.id}">刪除</button>
-        </td>
-      </tr>
-  `
-  });
-  orderList.innerHTML = str;
+    orderList.innerHTML = str;
+    renderChart();
+  };
 };
 
-function deleteOrder(e) {
-  let targetJs = e.target.dataset.js;
-  if (targetJs !== 'deleteOrderBtn' && targetJs !== 'deleteAllOrderBtn') {
-    return
-  } else if (targetJs === 'deleteAllOrderBtn') {
+function deleteOrder(id, btnProp) {
+  if (btnProp === 'deleteAll') {
     axios.delete(`${baseUrl}/${adminOrder_path}`, tokenObj).then(function (res) {
       getOrderData();
     }).catch(function (err) {
@@ -87,9 +94,10 @@ function deleteOrder(e) {
       if (!errData.status) {
         console.log(errData.message);
       };
+    }).then(function () {
+      popUpDiv.setAttribute('data-popUp', false);
     });
-  } else if (targetJs === 'deleteOrderBtn') {
-    let id = e.target.dataset.id;
+  } else if (btnProp === 'deleteOne') {
     axios.delete(`${baseUrl}/${adminOrder_path}/${id}`, tokenObj).then(function (res) {
       getOrderData();
     }).catch(function (err) {
@@ -97,28 +105,28 @@ function deleteOrder(e) {
       if (!errData.status) {
         console.log(errData.message);
       };
+    }).then(function () {
+      popUpDiv.setAttribute('data-popUp', false);
     });
   };
 };
 
-function isPaid(e) {
-  e.preventDefault();
-  if (e.target.dataset.js !== 'paidBtn') { return }
-  let id = e.target.dataset.id;
+function isPaid(id, status) {
   let obj = {
     "data": {
       "id": id,
-      "paid": true
+      "paid": !status
     }
   };
   axios.put(`${baseUrl}/${adminOrder_path}`, obj, tokenObj).then(function (res) {
-    console.log(res);
     getOrderData();
   }).catch(function (err) {
     let errData = err.response.data;
     if (!errData.status) {
       console.log(errData.message);
     };
+  }).then(function () {
+    popUpDiv.setAttribute('data-popUp', false);
   });
 };
 
@@ -193,6 +201,93 @@ function renderChart() {
       width: 400
     },
   });
-}
+};
 
+function doubleCheckMsg(e) {
+  e.preventDefault();
+  let targetJs = e.target.dataset.js;
+  if (targetJs !== 'deleteOrderBtn' && targetJs !== 'deleteAllOrderBtn' && targetJs !== 'paidBtn') { return };
 
+  const popUpMsg = document.querySelector('[data-js="popUpMsg"]');
+  let orderId;
+  let target;
+  let str = '';
+  popUpDiv.setAttribute('data-popUp', true);
+
+  if (targetJs == 'deleteAllOrderBtn') {
+    str += `
+      <div class="popUp-body pr-16 mb-2">
+      <p class="text-lg pb-1.5">確定要刪除<strong>全部訂單</strong>嗎？</p>
+      </div>
+      <div class="popUp-footer flex justify-end">
+      <button class="mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75" data-js="dblCheckBtn" data-dblCheckBtn="false">取消</button>
+      <button class="py-2 px-3 bg-danger text-white rounded hover:opacity-75" data-prop="deleteAll" data-js="dblCheckBtn" data-dblCheckBtn="true">刪除</button>
+      </div>
+      `;
+  } else {
+    orderId = e.target.dataset.id;
+    target = orderData.filter(function (item) { return item.id == orderId });
+    target = target[0];
+    let productStr = '';
+    target.products.forEach(function (item) {
+      productStr += `<li>${item.title}</li>`;
+    });
+
+    if (targetJs == 'deleteOrderBtn') {
+      str += `
+        <div class="popUp-body p-4 border-b">
+          <p class="text-lg pb-1.5">確定要刪除以下訂單嗎？</p>
+          <hr>
+          <ul class="mt-4"}>
+            <li>訂單編號：${target.id}</li>
+            <li>顧客姓名：${target.user.name}</li>
+            <li>
+              購買產品：
+              <ul class="list-disc ml-8">${productStr}</ul>
+            </li>
+            <li>總金額：${target.total}
+        </div>
+        <div class="popUp-footer flex justify-end py-4">
+          <button class="mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75" data-js="dblCheckBtn" data-dblCheckBtn="false">取消</button>
+          <button class="py-2 px-3 bg-danger text-white rounded hover:opacity-75" data-prop="deleteOne" data-js="dblCheckBtn" data-dblCheckBtn="true">刪除</button>
+        </div>
+      `;
+    } else if (targetJs === 'paidBtn') {
+      str += `
+        <div class="popUp-body p-4 border-b">
+          <p class="text-lg pb-1.5">
+            確定要將以下訂單的狀態從 <span class="text-info underline">${target.paid ? '已處理' : '未處理'}</span> 改成 
+            <span class="text-info underline">${target.paid ? '未處理' : '已處理'}</span> 嗎？
+          </p>
+          <hr>
+          <ul class="mt-4"}>
+            <li>訂單編號：${target.id}</li>
+            <li>顧客姓名：${target.user.name}</li>
+            <li>
+              購買產品：
+              <ul class="list-disc ml-8">${productStr}</ul>
+            </li>
+            <li>總金額：${target.total}
+        </div>
+        <div class="popUp-footer flex justify-end py-4">
+          <button class="mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75" data-js="dblCheckBtn" data-dblCheckBtn="false">取消</button>
+          <button class="py-2 px-3 bg-danger text-white rounded hover:opacity-75" data-prop="changePaid" data-js="dblCheckBtn" data-dblCheckBtn="true">確定</button>
+        </div>
+      `;
+    };
+  };
+  popUpMsg.innerHTML = str;
+  popUpDiv.addEventListener('click', function (e) {
+    let targetJs = e.target.dataset.js;
+    let btnProp = e.target.dataset.prop;
+    if (targetJs !== 'popUpDiv' && targetJs !== 'dblCheckBtn') {
+      return;
+    } else if (Object.is(popUpDiv, e.target) || e.target.dataset.dblcheckbtn === 'false') {
+      popUpDiv.setAttribute('data-popUp', false);
+    } else if (btnProp === 'changePaid') {
+      isPaid(orderId, target.paid);
+    } else if (btnProp === 'deleteOne' || btnProp === 'deleteAll') {
+      deleteOrder(orderId, btnProp);
+    };
+  });
+};

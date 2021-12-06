@@ -1,0 +1,14 @@
+// js 樣式
+[data-hasOrder="true"]{
+  @apply flex;
+}
+[data-hasOrder="false"]{
+  @apply hidden;
+}
+
+[data-popUp="true"]{
+  @apply flex;
+}
+[data-popUp="false"]{
+  @apply hidden
+}

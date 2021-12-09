@@ -4,17 +4,9 @@
   }
 }
 
-[data-topMenu-burger="active"] {
+[data-topMenuBurger="active"] {
   --tw-text-opacity: 1;
   color: rgba(106, 51, 248, var(--tw-text-opacity));
-}
-
-[data-topMenu="show"] {
-  display: block;
-}
-
-[data-topMenu="hidden"] {
-  display: none;
 }
 
 [data-hasOrder="show"] {

@@ -40,17 +40,17 @@
         </li>
       </ul>
 
-      <a class="material-icons text-4xl pt-1 md:hidden" data-js="topMenuBurger" data-topMenu-burger="close">
+      <a class="material-icons text-4xl pt-1 md:hidden" data-js="topMenuBurger" data-topMenuBurger="close">
         menu
       </a>
       <!-- mobile & pad -->
       <ul
-        class="navbar h-screen px-12 bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transtion duration-500"
-        data-js="topMenu" data-topMenu="show">
-        <li class="mt-8 mb-4">
+        class="navbar w-0 h-screen overflow-hidden bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transtion-all duration-500"
+        data-js="topMenu">
+        <li class="mt-8 mb-4 px-8">
           <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
         </li>
-        <li>
+        <li class="px-8">
           <a class="hover:text-primary transition-all duration-500" href="#">管理員登入</a>
         </li>
       </ul>
@@ -108,17 +108,15 @@
 <script>
   const topMenuBurger = document.querySelector('[data-js="topMenuBurger"]');
   const topMenu = document.querySelector('[data-js="topMenu"]');
-  topMenu.style.transform = `translateX(${topMenu.offsetWidth}px)`;
-  console.log()
   topMenuBurger.addEventListener('click', function (e) {
     let headerHeight = document.querySelector('header').offsetHeight;
     topMenu.style.top = `${headerHeight}px`;
-    if (topMenuBurger.getAttribute('data-topMenu') === 'active') {
-      topMenuBurger.setAttribute('data-topMenu', 'close');
-      topMenu.style.transform = `translateX(${topMenu.offsetWidth}px)`;
+    if (topMenuBurger.getAttribute('data-topMenuBurger') === 'active') {
+      topMenuBurger.setAttribute('data-topMenuBurger', 'close');
+      topMenu.style.width = 0;
     } else {
-      topMenuBurger.setAttribute('data-topMenu', 'active');
-      topMenu.style.transform = `translateX(0)`;
+      topMenuBurger.setAttribute('data-topMenuBurger', 'active');
+      topMenu.style.width = 'auto';
     };
   });
 

@@ -25,8 +25,8 @@
 <body>
 
   
-<header
-  class="bg-white py-4 md:py-6 lg:py-9 border-b-10 sm:border-b-20 lg:border-b-40 sticky top-0 right-0 left-0 z-50">
+<header class="bg-white py-4 md:py-6 lg:py-9 border-b-10 sm:border-b-20 lg:border-b-40 sticky top-0 right-0 left-0 z-50"
+  data-topMenu="hidden">
   <div class="container">
     <nav class="flex justify-between">
       <h1 class="text-2xl font-bold hover:text-primary mr-16 transform hover:scale-105 transition-all"><a
@@ -45,7 +45,7 @@
       </a>
       <!-- mobile & pad -->
       <ul
-        class="navbar w-0 h-screen overflow-hidden bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transition-all duration-500"
+        class="navbar h-screen bg-white border-l border-gray-300 md:hidden items-center text-xl absolute right-0 bottom-0 z-50 transition-all duration-500"
         data-js="topMenu">
         <li class="mt-8 mb-4 px-12">
           <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
@@ -106,17 +106,24 @@
 </div>
 
 <script>
+  const headerDiv = document.querySelector('header');
   const topMenuBurger = document.querySelector('[data-js="topMenuBurger"]');
   const topMenu = document.querySelector('[data-js="topMenu"]');
+  topMenu.style.right = `-${topMenu.offsetWidth}px`;
+
   topMenuBurger.addEventListener('click', function (e) {
-    let headerHeight = document.querySelector('header').offsetHeight;
+    let headerHeight = headerDiv.offsetHeight;
     topMenu.style.top = `${headerHeight}px`;
     if (topMenuBurger.getAttribute('data-topMenuBurger') === 'active') {
       topMenuBurger.setAttribute('data-topMenuBurger', 'close');
-      topMenu.style.width = 0;
+      topMenu.style.right = `-${topMenu.offsetWidth}px`;
+      if (topMenu.style.right < 0) {
+        headerDiv.setAttribute('data-topMenu', 'hidden');
+      };
     } else {
+      headerDiv.setAttribute('data-topMenu', 'show');
       topMenuBurger.setAttribute('data-topMenuBurger', 'active');
-      topMenu.style.width = '200px';
+      topMenu.style.right = 0;
     };
   });
 

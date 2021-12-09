@@ -201,6 +201,10 @@ function renderChart() {
       columns: chartData,
       type: 'pie',
       colors: colorObj
+    },
+    size: {
+      height: 400,
+      width: 400
     }
   });
 }

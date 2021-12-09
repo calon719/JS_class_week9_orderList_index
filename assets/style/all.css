@@ -670,6 +670,10 @@ video {
   margin-bottom: 0.75rem;
 }
 
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
 .mb-14 {
   margin-bottom: 3.5rem;
 }
@@ -986,6 +990,10 @@ video {
 
 .text-2xl {
   font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.75rem;
 }
 
 .text-4xl {

@@ -45,12 +45,12 @@
       </a>
       <!-- mobile & pad -->
       <ul
-        class="navbar w-0 h-screen overflow-hidden bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transtion-all duration-500"
+        class="navbar w-0 h-screen overflow-hidden bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transition-all duration-500"
         data-js="topMenu">
-        <li class="mt-8 mb-4 px-8">
+        <li class="mt-8 mb-4 px-12">
           <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
         </li>
-        <li class="px-8">
+        <li class="px-12">
           <a class="hover:text-primary transition-all duration-500" href="#">管理員登入</a>
         </li>
       </ul>
@@ -116,7 +116,7 @@
       topMenu.style.width = 0;
     } else {
       topMenuBurger.setAttribute('data-topMenuBurger', 'active');
-      topMenu.style.width = 'auto';
+      topMenu.style.width = '200px';
     };
   });
 

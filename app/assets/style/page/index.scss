@@ -4,14 +4,8 @@
   }
 }
 // js 樣式
-[data-topMenu-burger="active"]{
+[data-offcanvasBurger="active"]{
   @apply text-primary;
-}
-[data-topMenu="show"]{
-  @apply block;
-}
-[data-topMenu="hidden"]{
-  @apply hidden;
 }
 [data-hasOrder="show"]{
   @apply flex;

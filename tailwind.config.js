@@ -1,6 +1,6 @@
 module.exports = {
   purge: {
-    enabled: true,
+    enabled: false,
     content: ["./app/**/*.html", "./app/assets/style/**/*.scss", "./app/**/*.js", "./app/**/*.ejs"],
   },
   darkMode: false, // or 'media' or 'class'
@@ -9,7 +9,7 @@ module.exports = {
       center: true,
       padding: {
         DEFAULT: '1rem',
-        sm: "0"
+        lg: "0"
       },
     },
     screens: {
@@ -59,9 +59,12 @@ module.exports = {
         '75': '18.75rem',
         '87': '21.75rem',
         '105': '26.25rem',
+        '278': '69.5rem'
       },
       borderWidth: {
         '3': '3px',
+        '10': '10px',
+        '20': '20px',
         '40': '40px'
       },
       cursor: {

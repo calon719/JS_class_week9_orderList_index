@@ -1,21 +1,35 @@
+.material-icons.md\:hidden{
+  @media md {
+    @apply hidden;
+  }
+}
 // js 樣式
-[data-hasOrder="true"]{
+[data-topMenu-burger="active"]{
+  @apply text-primary;
+}
+[data-topMenu="show"]{
+  @apply block;
+}
+[data-topMenu="hidden"]{
+  @apply hidden;
+}
+[data-hasOrder="show"]{
   @apply flex;
 }
-[data-hasOrder="false"]{
+[data-hasOrder="hidden"]{
   @apply hidden;
 }
 
-[data-popUp="true"]{
+[data-popUp="show"]{
   @apply flex;
 }
-[data-popUp="false"]{
+[data-popUp="hidden"]{
   @apply hidden;
 }
 
-[data-loading="true"]{
+[data-loading="show"]{
   @apply flex;
 }
-[data-loading="false"]{
+[data-loading="hidden"]{
   @apply hidden;
 }

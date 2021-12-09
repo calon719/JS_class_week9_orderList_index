@@ -39,20 +39,20 @@ function getOrderData() {
     };
   }).then(function () {
     const loadingAnimation = document.querySelector('[data-loading]');
-    loadingAnimation.setAttribute('data-loading', false);
+    loadingAnimation.setAttribute('data-loading', 'hidden');
   });
 };
 
 function renderOrderList() {
   const msg = document.querySelector('p[data-hasOrder]');
   if (orderData.length === 0) {
-    msg.setAttribute('data-hasOrder', true);
-    orderTable.setAttribute('data-hasOrder', false);
-    chartEl.setAttribute('data-hasOrder', false);
+    msg.setAttribute('data-hasOrder', 'show');
+    orderTable.setAttribute('data-hasOrder', 'hidden');
+    chartEl.setAttribute('data-hasOrder', 'hidden');
   } else {
-    msg.setAttribute('data-hasOrder', false);
-    orderTable.setAttribute('data-hasOrder', true);
-    chartEl.setAttribute('data-hasOrder', true);
+    msg.setAttribute('data-hasOrder', 'hidden');
+    orderTable.setAttribute('data-hasOrder', 'show');
+    chartEl.setAttribute('data-hasOrder', 'show');
 
     let str = '';
     orderData.forEach(function (item) {
@@ -100,7 +100,7 @@ function deleteOrder(id, btnProp) {
         console.log(errData.message);
       };
     }).then(function () {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   } else if (btnProp === 'deleteOne') {
     axios.delete(`${baseUrl}/${adminOrder_path}/${id}`, tokenObj).then(function (res) {
@@ -111,12 +111,12 @@ function deleteOrder(id, btnProp) {
         console.log(errData.message);
       };
     }).then(function () {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   };
 };
 
-function isPaid(id, status) {
+function changePaid(id, status) {
   let obj = {
     "data": {
       "id": id,
@@ -131,7 +131,7 @@ function isPaid(id, status) {
       console.log(errData.message);
     };
   }).then(function () {
-    popUpDiv.setAttribute('data-popUp', false);
+    popUpDiv.setAttribute('data-popUp', 'hidden');
   });
 };
 
@@ -159,10 +159,7 @@ function renderChart() {
     });
   });
 
-  let newAry = ary.sort(function (a, b) {
-    if (a.revenue > b.revenue) return -1; // true 時後面的數放在前面
-    if (a.revenue < b.revenue) return 1; // true 時前面得數放在前面
-  });
+  let newAry = ary.sort(function (a, b) { return b.revenue - a.revenue });
 
   let otherObj = {
     title: '其他',
@@ -181,12 +178,10 @@ function renderChart() {
     };
   });
 
-  // 根據順序上圖表顏色
   chartData.push([otherObj.title, otherObj.revenue]);
-  chartData = chartData.sort(function (a, b) {
-    if (a[1] > b[1]) return -1;
-    if (a[1] < b[1]) return 1;
-  });
+
+  // 根據順序上圖表顏色
+  chartData = chartData.sort(function (a, b) { return b[1] - a[1] });
 
   const colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
   let colorObj = {};
@@ -217,7 +212,7 @@ function doubleCheckMsg(e) {
   let orderId;
   let target;
   let str = '';
-  popUpDiv.setAttribute('data-popUp', true);
+  popUpDiv.setAttribute('data-popUp', 'show');
 
   if (targetJs == 'deleteAllOrderBtn') {
     str += `
@@ -261,7 +256,7 @@ function doubleCheckMsg(e) {
       str += `
         <div class="popUp-body p-4 border-b">
           <p class="text-lg pb-1.5">
-            確定要將以下訂單的狀態從 <span class="text-info underline">${target.paid ? '已處理' : '未處理'}</span> 改成 
+            確定要將以下訂單的狀態從 <span class="text-info underline">${target.paid ? '已處理' : '未處理'}</span> 更改為 
             <span class="text-info underline">${target.paid ? '未處理' : '已處理'}</span> 嗎？
           </p>
           <hr>
@@ -288,9 +283,10 @@ function doubleCheckMsg(e) {
     if (targetJs !== 'popUpDiv' && targetJs !== 'dblCheckBtn') {
       return;
     } else if (Object.is(popUpDiv, e.target) || e.target.dataset.dblcheckbtn === 'false') {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     } else if (btnProp === 'changePaid') {
-      isPaid(orderId, target.paid);
+      let isPaid = target.paid;
+      changePaid(orderId, isPaid);
     } else if (btnProp === 'deleteOne' || btnProp === 'deleteAll') {
       deleteOrder(orderId, btnProp);
     };

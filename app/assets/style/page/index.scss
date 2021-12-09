@@ -3,6 +3,9 @@
     @apply hidden;
   }
 }
+[data-js="offcanvas"]{
+  @apply h-0 overflow-hidden;
+}
 // js 樣式
 [data-offcanvasBurger="active"]{
   @apply text-primary;

@@ -46,8 +46,8 @@
       <!-- mobile & pad -->
 
       <ul
-        class="navbar overflow-hidden h-0 bg-white border-l border-gray-300 md:hidden items-center text-xl absolute right-0 left-0 z-50 transition-all duration-500"
-        data-js="offcanvas">
+        class="navbar overflow-hidden bg-white border-l border-gray-300 md:hidden items-center text-xl absolute right-0 left-0 z-50 transition-all duration-500"
+        data-js="offcanvas" style="height: 0;">
         <li class="px-12 pt-8 pb-4">
           <a class="block hover:text-primary transition-all duration-500" href="#">後台管理</a>
         </li>
@@ -59,51 +59,53 @@
   </div>
 </header>
 
-<div class="container">
-  <section class="productChart mt-15 mb-14 flex justify-center">
-    <div id="productRevenue" data-hasOrder="hidden"></div>
-  </section>
+<main>
+  <div class="container">
+    <section class="productChart mt-15 mb-14 flex justify-center">
+      <div id="productRevenue" data-hasOrder="hidden"></div>
+    </section>
 
-  <div class="loading py-12 justify-center" data-loading="show">
-    <div class="lds-ring">
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  </div>
-
-  <p class="justify-center text-lg py-24" data-hasOrder="hidden">尚未有任何訂單</p>
-  <section class="orderTable flex flex-col mb-27" data-hasOrder="hidden">
-    <button
-      class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"
-      data-js="deleteAllOrderBtn">清除全部訂單</button>
-    <div class="w-full overflow-x-auto">
-      <div class="w-278 lg:w-auto flex flex-col">
-        <table class="table-fixed border">
-          <thead>
-            <tr class="border-b">
-              <th class="p-1.5 text-left font-normal border-r">訂單編號</th>
-              <th class="p-1.5 text-left font-normal border-r">聯絡人</th>
-              <th class="p-1.5 text-left font-normal border-r">聯絡地址</th>
-              <th class="p-1.5 text-left font-normal border-r">電子郵件</th>
-              <th class="p-1.5 text-left font-normal border-r">訂單品項</th>
-              <th width="90" class="p-1.5 font-normal border-r">訂單日期</th>
-              <th width="80" class="p-1.5 font-normal border-r">訂單狀態</th>
-              <th width="70" class="p-1.5 font-normal">操作</th>
-            </tr>
-          </thead>
-          <tbody data-js="orderList"></tbody>
-        </table>
+    <div class="loading py-12 justify-center" data-loading="show">
+      <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </div>
-  </section>
-</div>
 
-<div class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-opacity-50 bg-dark justify-center items-center"
-  data-popUp="hidden" data-js="popUpDiv">
-  <div class="bg-white border border-gray-400 rounded-lg p-8" data-js="popUpMsg"></div>
-</div>
+    <p class="justify-center text-lg py-24" data-hasOrder="hidden">尚未有任何訂單</p>
+    <section class="orderTable flex flex-col mb-27" data-hasOrder="hidden">
+      <button
+        class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"
+        data-js="deleteAllOrderBtn">清除全部訂單</button>
+      <div class="w-full overflow-x-auto">
+        <div class="w-278 lg:w-auto flex flex-col">
+          <table class="table-fixed border">
+            <thead>
+              <tr class="border-b">
+                <th class="p-1.5 text-left font-normal border-r">訂單編號</th>
+                <th class="p-1.5 text-left font-normal border-r">聯絡人</th>
+                <th class="p-1.5 text-left font-normal border-r">聯絡地址</th>
+                <th class="p-1.5 text-left font-normal border-r">電子郵件</th>
+                <th class="p-1.5 text-left font-normal border-r">訂單品項</th>
+                <th width="90" class="p-1.5 font-normal border-r">訂單日期</th>
+                <th width="80" class="p-1.5 font-normal border-r">訂單狀態</th>
+                <th width="70" class="p-1.5 font-normal">操作</th>
+              </tr>
+            </thead>
+            <tbody data-js="orderList"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-opacity-50 bg-dark justify-center items-center"
+    data-popUp="hidden" data-js="popUpDiv">
+    <div class="bg-white border border-gray-400 rounded-lg p-8" data-js="popUpMsg"></div>
+  </div>
+</main>
 
 <script>
   const headerDiv = document.querySelector('header');

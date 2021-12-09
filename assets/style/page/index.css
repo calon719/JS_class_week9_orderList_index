@@ -1,29 +1,44 @@
-/* purgecss start ignore */
-
-[data-hasOrder="true"] {
-  display: flex;
+@media md {
+  .material-icons.md\:hidden {
+    display: none;
+  }
 }
 
-[data-hasOrder="false"] {
+[data-topMenu-burger="active"] {
+  --tw-text-opacity: 1;
+  color: rgba(106, 51, 248, var(--tw-text-opacity));
+}
+
+[data-topMenu="show"] {
+  display: block;
+}
+
+[data-topMenu="hidden"] {
   display: none;
 }
 
-[data-popUp="true"] {
+[data-hasOrder="show"] {
   display: flex;
 }
 
-[data-popUp="false"] {
+[data-hasOrder="hidden"] {
   display: none;
 }
 
-[data-loading="true"] {
+[data-popUp="show"] {
   display: flex;
 }
 
-[data-loading="false"] {
+[data-popUp="hidden"] {
   display: none;
 }
 
-/* purgecss end ignore */
+[data-loading="show"] {
+  display: flex;
+}
+
+[data-loading="hidden"] {
+  display: none;
+}
 
 /*# sourceMappingURL=index.css.map */

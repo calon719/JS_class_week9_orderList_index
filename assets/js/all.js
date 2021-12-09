@@ -42,7 +42,7 @@ function getOrderData() {
     ;
   }).then(function () {
     var loadingAnimation = document.querySelector('[data-loading]');
-    loadingAnimation.setAttribute('data-loading', false);
+    loadingAnimation.setAttribute('data-loading', 'hidden');
   });
 }
 
@@ -52,13 +52,13 @@ function renderOrderList() {
   var msg = document.querySelector('p[data-hasOrder]');
 
   if (orderData.length === 0) {
-    msg.setAttribute('data-hasOrder', true);
-    orderTable.setAttribute('data-hasOrder', false);
-    chartEl.setAttribute('data-hasOrder', false);
+    msg.setAttribute('data-hasOrder', 'show');
+    orderTable.setAttribute('data-hasOrder', 'hidden');
+    chartEl.setAttribute('data-hasOrder', 'hidden');
   } else {
-    msg.setAttribute('data-hasOrder', false);
-    orderTable.setAttribute('data-hasOrder', true);
-    chartEl.setAttribute('data-hasOrder', true);
+    msg.setAttribute('data-hasOrder', 'hidden');
+    orderTable.setAttribute('data-hasOrder', 'show');
+    chartEl.setAttribute('data-hasOrder', 'show');
     var str = '';
     orderData.forEach(function (item) {
       var listStr = '';
@@ -90,7 +90,7 @@ function deleteOrder(id, btnProp) {
 
       ;
     }).then(function () {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   } else if (btnProp === 'deleteOne') {
     axios["delete"]("".concat(baseUrl, "/").concat(adminOrder_path, "/").concat(id), tokenObj).then(function (res) {
@@ -104,7 +104,7 @@ function deleteOrder(id, btnProp) {
 
       ;
     }).then(function () {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   }
 
@@ -113,7 +113,7 @@ function deleteOrder(id, btnProp) {
 
 ;
 
-function isPaid(id, status) {
+function changePaid(id, status) {
   var obj = {
     "data": {
       "id": id,
@@ -131,7 +131,7 @@ function isPaid(id, status) {
 
     ;
   }).then(function () {
-    popUpDiv.setAttribute('data-popUp', false);
+    popUpDiv.setAttribute('data-popUp', 'hidden');
   });
 }
 
@@ -166,9 +166,7 @@ function renderChart() {
     });
   });
   var newAry = ary.sort(function (a, b) {
-    if (a.revenue > b.revenue) return -1; // true 時後面的數放在前面
-
-    if (a.revenue < b.revenue) return 1; // true 時前面得數放在前面
+    return b.revenue - a.revenue;
   });
   var otherObj = {
     title: '其他',
@@ -186,12 +184,11 @@ function renderChart() {
     }
 
     ;
-  }); // 根據順序上圖表顏色
+  });
+  chartData.push([otherObj.title, otherObj.revenue]); // 根據順序上圖表顏色
 
-  chartData.push([otherObj.title, otherObj.revenue]);
   chartData = chartData.sort(function (a, b) {
-    if (a[1] > b[1]) return -1;
-    if (a[1] < b[1]) return 1;
+    return b[1] - a[1];
   });
   var colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
   var colorObj = {};
@@ -227,7 +224,7 @@ function doubleCheckMsg(e) {
   var orderId;
   var target;
   var str = '';
-  popUpDiv.setAttribute('data-popUp', true);
+  popUpDiv.setAttribute('data-popUp', 'show');
 
   if (targetJs == 'deleteAllOrderBtn') {
     str += "\n      <div class=\"popUp-body pr-16 mb-2\">\n      <p class=\"text-lg pb-1.5\">\u78BA\u5B9A\u8981\u522A\u9664<strong>\u5168\u90E8\u8A02\u55AE</strong>\u55CE\uFF1F</p>\n      </div>\n      <div class=\"popUp-footer flex justify-end\">\n      <button class=\"mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"false\">\u53D6\u6D88</button>\n      <button class=\"py-2 px-3 bg-danger text-white rounded hover:opacity-75\" data-prop=\"deleteAll\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"true\">\u522A\u9664</button>\n      </div>\n      ";
@@ -245,7 +242,7 @@ function doubleCheckMsg(e) {
     if (targetJs == 'deleteOrderBtn') {
       str += "\n        <div class=\"popUp-body p-4 border-b\">\n          <p class=\"text-lg pb-1.5\">\u78BA\u5B9A\u8981\u522A\u9664\u4EE5\u4E0B\u8A02\u55AE\u55CE\uFF1F</p>\n          <hr>\n          <ul class=\"mt-4\"}>\n            <li>\u8A02\u55AE\u7DE8\u865F\uFF1A".concat(target.id, "</li>\n            <li>\u9867\u5BA2\u59D3\u540D\uFF1A").concat(target.user.name, "</li>\n            <li>\n              \u8CFC\u8CB7\u7522\u54C1\uFF1A\n              <ul class=\"list-disc ml-8\">").concat(productStr, "</ul>\n            </li>\n            <li>\u7E3D\u91D1\u984D\uFF1A").concat(target.total, "\n        </div>\n        <div class=\"popUp-footer flex justify-end py-4\">\n          <button class=\"mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"false\">\u53D6\u6D88</button>\n          <button class=\"py-2 px-3 bg-danger text-white rounded hover:opacity-75\" data-prop=\"deleteOne\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"true\">\u522A\u9664</button>\n        </div>\n      ");
     } else if (targetJs === 'paidBtn') {
-      str += "\n        <div class=\"popUp-body p-4 border-b\">\n          <p class=\"text-lg pb-1.5\">\n            \u78BA\u5B9A\u8981\u5C07\u4EE5\u4E0B\u8A02\u55AE\u7684\u72C0\u614B\u5F9E <span class=\"text-info underline\">".concat(target.paid ? '已處理' : '未處理', "</span> \u6539\u6210 \n            <span class=\"text-info underline\">").concat(target.paid ? '未處理' : '已處理', "</span> \u55CE\uFF1F\n          </p>\n          <hr>\n          <ul class=\"mt-4\"}>\n            <li>\u8A02\u55AE\u7DE8\u865F\uFF1A").concat(target.id, "</li>\n            <li>\u9867\u5BA2\u59D3\u540D\uFF1A").concat(target.user.name, "</li>\n            <li>\n              \u8CFC\u8CB7\u7522\u54C1\uFF1A\n              <ul class=\"list-disc ml-8\">").concat(productStr, "</ul>\n            </li>\n            <li>\u7E3D\u91D1\u984D\uFF1A").concat(target.total, "\n        </div>\n        <div class=\"popUp-footer flex justify-end py-4\">\n          <button class=\"mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"false\">\u53D6\u6D88</button>\n          <button class=\"py-2 px-3 bg-danger text-white rounded hover:opacity-75\" data-prop=\"changePaid\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"true\">\u78BA\u5B9A</button>\n        </div>\n      ");
+      str += "\n        <div class=\"popUp-body p-4 border-b\">\n          <p class=\"text-lg pb-1.5\">\n            \u78BA\u5B9A\u8981\u5C07\u4EE5\u4E0B\u8A02\u55AE\u7684\u72C0\u614B\u5F9E <span class=\"text-info underline\">".concat(target.paid ? '已處理' : '未處理', "</span> \u66F4\u6539\u70BA \n            <span class=\"text-info underline\">").concat(target.paid ? '未處理' : '已處理', "</span> \u55CE\uFF1F\n          </p>\n          <hr>\n          <ul class=\"mt-4\"}>\n            <li>\u8A02\u55AE\u7DE8\u865F\uFF1A").concat(target.id, "</li>\n            <li>\u9867\u5BA2\u59D3\u540D\uFF1A").concat(target.user.name, "</li>\n            <li>\n              \u8CFC\u8CB7\u7522\u54C1\uFF1A\n              <ul class=\"list-disc ml-8\">").concat(productStr, "</ul>\n            </li>\n            <li>\u7E3D\u91D1\u984D\uFF1A").concat(target.total, "\n        </div>\n        <div class=\"popUp-footer flex justify-end py-4\">\n          <button class=\"mr-2 py-2 px-3 bg-gray-400 text-white rounded hover:opacity-75\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"false\">\u53D6\u6D88</button>\n          <button class=\"py-2 px-3 bg-danger text-white rounded hover:opacity-75\" data-prop=\"changePaid\" data-js=\"dblCheckBtn\" data-dblCheckBtn=\"true\">\u78BA\u5B9A</button>\n        </div>\n      ");
     }
 
     ;
@@ -260,9 +257,10 @@ function doubleCheckMsg(e) {
     if (targetJs !== 'popUpDiv' && targetJs !== 'dblCheckBtn') {
       return;
     } else if (Object.is(popUpDiv, e.target) || e.target.dataset.dblcheckbtn === 'false') {
-      popUpDiv.setAttribute('data-popUp', false);
+      popUpDiv.setAttribute('data-popUp', 'hidden');
     } else if (btnProp === 'changePaid') {
-      isPaid(orderId, target.paid);
+      var isPaid = target.paid;
+      changePaid(orderId, isPaid);
     } else if (btnProp === 'deleteOne' || btnProp === 'deleteAll') {
       deleteOrder(orderId, btnProp);
     }

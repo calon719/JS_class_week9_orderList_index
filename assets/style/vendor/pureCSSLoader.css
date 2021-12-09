@@ -1,5 +1,3 @@
-/* purgecss start ignore */
-
 .lds-ring {
   display: inline-block;
   position: relative;
@@ -41,7 +39,5 @@
     transform: rotate(360deg);
   }
 }
-
-/* purgecss end ignore */
 
 /*# sourceMappingURL=pureCSSLoader.css.map */

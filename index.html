@@ -8,7 +8,6 @@
   <title>
     WOWOROOM 後台管理
   </title>
-  <link rel="stylesheet" href="./assets/style/all.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
@@ -17,6 +16,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.css"
     integrity="sha512-cznfNokevSG7QPA5dZepud8taylLdvgr0lDqw/FEZIhluFsSwyvS81CMnRdrNSKwbsmc43LtRd2/WMQV+Z85AQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
     integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -25,13 +25,29 @@
 <body>
 
   
-<header class="bg-white py-9 border-b-40 sticky top-0 z-50">
+<header
+  class="bg-white py-4 md:py-6 lg:py-9 border-b-10 sm:border-b-20 lg:border-b-40 sticky top-0 right-0 left-0 z-50">
   <div class="container">
     <nav class="flex justify-between">
-      <h1 class="text-2xl font-bold hover:text-primary transform hover:scale-105 transition-all"><a
+      <h1 class="text-2xl font-bold hover:text-primary mr-16 transform hover:scale-105 transition-all"><a
           href="/">WOWOROOM</a></h1>
-      <ul class="navbar flex text-xl">
+      <ul class="navbar hidden md:flex items-center text-xl">
         <li class="mr-12">
+          <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
+        </li>
+        <li>
+          <a class="hover:text-primary transition-all duration-500" href="#">管理員登入</a>
+        </li>
+      </ul>
+
+      <a class="material-icons text-4xl pt-1 md:hidden" data-js="topMenuBurger" data-topMenu-burger="close">
+        menu
+      </a>
+      <!-- mobile & pad -->
+      <ul
+        class="navbar h-screen px-12 bg-white border-l border-gray-300 md:hidden items-center text-xl absolute bottom-0 right-0 z-50 transtion duration-500"
+        data-js="topMenu" data-topMenu="show">
+        <li class="mt-8 mb-4">
           <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
         </li>
         <li>
@@ -42,12 +58,13 @@
   </div>
 </header>
 
+
 <div class="container">
   <section class="productChart mt-15 mb-14 flex justify-center">
-    <div id="productRevenue" data-hasOrder="false"></div>
+    <div id="productRevenue" data-hasOrder="hidden"></div>
   </section>
 
-  <div class="loading py-12 justify-center" data-loading="true">
+  <div class="loading py-12 justify-center" data-loading="show">
     <div class="lds-ring">
       <div></div>
       <div></div>
@@ -55,34 +72,59 @@
       <div></div>
     </div>
   </div>
-  <p class="justify-center text-lg py-24" data-hasOrder="false">尚未有任何訂單</p>
-  <section class="orderTable flex flex-col mb-27" data-hasOrder="false">
+
+  <p class="justify-center text-lg py-24" data-hasOrder="hidden">尚未有任何訂單</p>
+  <section class="orderTable flex flex-col mb-27" data-hasOrder="hidden">
     <button
       class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"
       data-js="deleteAllOrderBtn">清除全部訂單</button>
-    <table class="table-fixed border">
-      <thead>
-        <tr class="border-b">
-          <th class="p-1.5 text-left font-normal border-r">訂單編號</th>
-          <th class="p-1.5 text-left font-normal border-r">聯絡人</th>
-          <th class="p-1.5 text-left font-normal border-r">聯絡地址</th>
-          <th class="p-1.5 text-left font-normal border-r">電子郵件</th>
-          <th class="p-1.5 text-left font-normal border-r">訂單品項</th>
-          <th width="90" class="p-1.5 font-normal border-r">訂單日期</th>
-          <th width="80" class="p-1.5 font-normal border-r">訂單狀態</th>
-          <th width="70" class="p-1.5 font-normal">操作</th>
-        </tr>
-      </thead>
-      <tbody data-js="orderList"></tbody>
-    </table>
+    <div class="w-full overflow-x-auto">
+      <div class="w-278 lg:w-auto flex flex-col">
+        <table class="table-fixed border">
+          <thead>
+            <tr class="border-b">
+              <th class="p-1.5 text-left font-normal border-r">訂單編號</th>
+              <th class="p-1.5 text-left font-normal border-r">聯絡人</th>
+              <th class="p-1.5 text-left font-normal border-r">聯絡地址</th>
+              <th class="p-1.5 text-left font-normal border-r">電子郵件</th>
+              <th class="p-1.5 text-left font-normal border-r">訂單品項</th>
+              <th width="90" class="p-1.5 font-normal border-r">訂單日期</th>
+              <th width="80" class="p-1.5 font-normal border-r">訂單狀態</th>
+              <th width="70" class="p-1.5 font-normal">操作</th>
+            </tr>
+          </thead>
+          <tbody data-js="orderList"></tbody>
+        </table>
+      </div>
+    </div>
   </section>
 </div>
 
 <div class="fixed top-0 bottom-0 left-0 right-0 z-50 bg-opacity-50 bg-dark justify-center items-center"
-  data-popUp="false" data-js="popUpDiv">
+  data-popUp="hidden" data-js="popUpDiv">
   <div class="bg-white border border-gray-400 rounded-lg p-8" data-js="popUpMsg"></div>
 </div>
 
+<script>
+  const topMenuBurger = document.querySelector('[data-js="topMenuBurger"]');
+  const topMenu = document.querySelector('[data-js="topMenu"]');
+  topMenu.style.transform = `translateX(${topMenu.offsetWidth}px)`;
+  console.log()
+  topMenuBurger.addEventListener('click', function (e) {
+    let headerHeight = document.querySelector('header').offsetHeight;
+    topMenu.style.top = `${headerHeight}px`;
+    if (topMenuBurger.getAttribute('data-topMenu') === 'active') {
+      topMenuBurger.setAttribute('data-topMenu', 'close');
+      topMenu.style.transform = `translateX(${topMenu.offsetWidth}px)`;
+    } else {
+      topMenuBurger.setAttribute('data-topMenu', 'active');
+      topMenu.style.transform = `translateX(0)`;
+    };
+  });
+
+</script>
+
+    <link rel="stylesheet" href="./assets/style/all.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.1.0/d3.min.js"
       integrity="sha512-knQLStC4nnQtFuSWBblXuPFvKqdEIhzqBVaj8IMfyBQpsaxQ6Q0SFmY4Gf6/W/dMi39Tf0PlPIecyQBHazS7ag=="
       crossorigin="anonymous" referrerpolicy="no-referrer"></script>

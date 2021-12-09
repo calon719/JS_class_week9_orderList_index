@@ -1,18 +1,12 @@
-/* purgecss start ignore */
-
 @media md {
   .material-icons.md\:hidden {
     display: none;
   }
 }
 
-[data-topMenuBurger="active"] {
+[data-offcanvasBurger="active"] {
   --tw-text-opacity: 1;
   color: rgba(106, 51, 248, var(--tw-text-opacity));
-}
-
-[data-topMenu="hidden"] {
-  overflow: hidden;
 }
 
 [data-hasOrder="show"] {
@@ -38,7 +32,5 @@
 [data-loading="hidden"] {
   display: none;
 }
-
-/* purgecss end ignore */
 
 /*# sourceMappingURL=index.css.map */

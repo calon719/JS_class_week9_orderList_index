@@ -40,24 +40,24 @@
         </li>
       </ul>
 
-      <a class="material-icons text-4xl pt-1 md:hidden" data-js="topMenuBurger" data-topMenuBurger="close">
+      <a class="material-icons text-4xl pt-1 md:hidden" data-js="offcanvasBurger" data-offcanvasBurger="close">
         menu
       </a>
       <!-- mobile & pad -->
+
       <ul
-        class="navbar h-screen bg-white border-l border-gray-300 md:hidden items-center text-xl absolute right-0 bottom-0 z-50 transition-all duration-500"
-        data-js="topMenu">
-        <li class="mt-8 mb-4 px-12">
-          <a class="hover:text-primary transition-all duration-500" href="#">後台管理</a>
+        class="navbar overflow-hidden h-0 bg-white border-l border-gray-300 md:hidden items-center text-xl absolute right-0 left-0 z-50 transition-all duration-500"
+        data-js="offcanvas">
+        <li class="px-12 pt-8 pb-4">
+          <a class="block hover:text-primary transition-all duration-500" href="#">後台管理</a>
         </li>
-        <li class="px-12">
-          <a class="hover:text-primary transition-all duration-500" href="#">管理員登入</a>
+        <li class="px-12 pb-8">
+          <a class="block hover:text-primary transition-all duration-500" href="#">管理員登入</a>
         </li>
       </ul>
     </nav>
   </div>
 </header>
-
 
 <div class="container">
   <section class="productChart mt-15 mb-14 flex justify-center">
@@ -107,26 +107,27 @@
 
 <script>
   const headerDiv = document.querySelector('header');
-  const topMenuBurger = document.querySelector('[data-js="topMenuBurger"]');
-  const topMenu = document.querySelector('[data-js="topMenu"]');
-  topMenu.style.right = `-${topMenu.offsetWidth}px`;
+  const offcanvasBurger = document.querySelector('[data-js="offcanvasBurger"]');
+  const offcanvas = document.querySelector('[data-js="offcanvas"]');
+  const childrenNodes = document.querySelectorAll('[data-js="offcanvas"] li');
 
-  topMenuBurger.addEventListener('click', function (e) {
+  offcanvasBurger.addEventListener('click', function (e) {
+    let offcanvasBurgerStatus = offcanvasBurger.getAttribute('data-offcanvasBurger');
     let headerHeight = headerDiv.offsetHeight;
-    topMenu.style.top = `${headerHeight}px`;
-    if (topMenuBurger.getAttribute('data-topMenuBurger') === 'active') {
-      topMenuBurger.setAttribute('data-topMenuBurger', 'close');
-      topMenu.style.right = `-${topMenu.offsetWidth}px`;
-      if (topMenu.style.right < 0) {
-        headerDiv.setAttribute('data-topMenu', 'hidden');
-      };
-    } else {
-      headerDiv.setAttribute('data-topMenu', 'show');
-      topMenuBurger.setAttribute('data-topMenuBurger', 'active');
-      topMenu.style.right = 0;
-    };
-  });
+    offcanvas.style.top = `${headerHeight}px`;
+    let childrenHeight = 0;
+    childrenNodes.forEach(function (item) {
+      childrenHeight += item.offsetHeight;
+    });
 
+    if (offcanvasBurgerStatus === 'close') {
+      offcanvasBurger.setAttribute('data-offcanvasBurger', 'active');
+      offcanvas.style.height = `${childrenHeight}px`;
+    } else {
+      offcanvasBurger.setAttribute('data-offcanvasBurger', 'close');
+      offcanvas.style.height = 0;
+    }
+  });
 </script>
 
     <link rel="stylesheet" href="./assets/style/all.css">

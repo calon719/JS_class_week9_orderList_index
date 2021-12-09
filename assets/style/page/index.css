@@ -6,6 +6,11 @@
   }
 }
 
+[data-js="offcanvas"] {
+  height: 0px;
+  overflow: hidden;
+}
+
 [data-offcanvasBurger="active"] {
   --tw-text-opacity: 1;
   color: rgba(106, 51, 248, var(--tw-text-opacity));

@@ -15,7 +15,7 @@ var tokenObj = {
 var orderList = document.querySelector('[data-js="orderList"]');
 var orderTable = document.querySelector('.orderTable');
 var popUpDiv = document.querySelector('[data-js="popUpDiv"]');
-var chartEl = document.querySelector('#productRevenue'); // data
+var chartSection = document.querySelector('.productChart'); // data
 
 var orderData; // event
 
@@ -54,11 +54,11 @@ function renderOrderList() {
   if (orderData.length === 0) {
     msg.setAttribute('data-hasOrder', 'show');
     orderTable.setAttribute('data-hasOrder', 'hidden');
-    chartEl.setAttribute('data-hasOrder', 'hidden');
+    chartSection.setAttribute('data-hasOrder', 'hidden');
   } else {
     msg.setAttribute('data-hasOrder', 'hidden');
     orderTable.setAttribute('data-hasOrder', 'show');
-    chartEl.setAttribute('data-hasOrder', 'show');
+    chartSection.setAttribute('data-hasOrder', 'show');
     var str = '';
     orderData.forEach(function (item) {
       var listStr = '';

@@ -924,14 +924,14 @@ video {
   padding-bottom: 1rem;
 }
 
-.py-12 {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
 .py-24 {
   padding-top: 6rem;
   padding-bottom: 6rem;
+}
+
+.py-36 {
+  padding-top: 9rem;
+  padding-bottom: 9rem;
 }
 
 .py-1\.5 {

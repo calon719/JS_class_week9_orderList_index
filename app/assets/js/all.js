@@ -14,7 +14,7 @@ const tokenObj = {
 const orderList = document.querySelector('[data-js="orderList"]');
 const orderTable = document.querySelector('.orderTable');
 const popUpDiv = document.querySelector('[data-js="popUpDiv"]');
-const chartEl = document.querySelector('#productRevenue');
+const chartSection = document.querySelector('.productChart');
 
 // data
 let orderData;
@@ -29,15 +29,15 @@ function init() {
 };
 
 function getOrderData() {
-  axios.get(`${baseUrl}/${adminOrder_path}`, tokenObj).then(function (res) {
+  axios.get(`${baseUrl}/${adminOrder_path}`, tokenObj).then(res => {
     orderData = res.data.orders;
     renderOrderList();
-  }).catch(function (err) {
+  }).catch(err => {
     let errData = err.response.data;
     if (!errData.status) {
       console.log(errData.message);
     };
-  }).then(function () {
+  }).then(() => {
     const loadingAnimation = document.querySelector('[data-loading]');
     loadingAnimation.setAttribute('data-loading', 'hidden');
   });
@@ -48,14 +48,14 @@ function renderOrderList() {
   if (orderData.length === 0) {
     msg.setAttribute('data-hasOrder', 'show');
     orderTable.setAttribute('data-hasOrder', 'hidden');
-    chartEl.setAttribute('data-hasOrder', 'hidden');
+    chartSection.setAttribute('data-hasOrder', 'hidden');
   } else {
     msg.setAttribute('data-hasOrder', 'hidden');
     orderTable.setAttribute('data-hasOrder', 'show');
-    chartEl.setAttribute('data-hasOrder', 'show');
+    chartSection.setAttribute('data-hasOrder', 'show');
 
     let str = '';
-    orderData.forEach(function (item) {
+    orderData.forEach(item => {
       let listStr = ''
       item.products.forEach(function (item) {
         listStr += `<li>${item.title}</li>`
@@ -92,25 +92,25 @@ function renderOrderList() {
 
 function deleteOrder(id, btnProp) {
   if (btnProp === 'deleteAll') {
-    axios.delete(`${baseUrl}/${adminOrder_path}`, tokenObj).then(function (res) {
+    axios.delete(`${baseUrl}/${adminOrder_path}`, tokenObj).then(res => {
       getOrderData();
-    }).catch(function (err) {
+    }).catch(err => {
       let errData = err.response.data;
       if (!errData.status) {
         console.log(errData.message);
       };
-    }).then(function () {
+    }).then(() => {
       popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   } else if (btnProp === 'deleteOne') {
-    axios.delete(`${baseUrl}/${adminOrder_path}/${id}`, tokenObj).then(function (res) {
+    axios.delete(`${baseUrl}/${adminOrder_path}/${id}`, tokenObj).then(res => {
       getOrderData();
-    }).catch(function (err) {
+    }).catch(err => {
       let errData = err.response.data;
       if (!errData.status) {
         console.log(errData.message);
       };
-    }).then(function () {
+    }).then(() => {
       popUpDiv.setAttribute('data-popUp', 'hidden');
     });
   };
@@ -123,14 +123,14 @@ function changePaid(id, status) {
       "paid": !status
     }
   };
-  axios.put(`${baseUrl}/${adminOrder_path}`, obj, tokenObj).then(function (res) {
+  axios.put(`${baseUrl}/${adminOrder_path}`, obj, tokenObj).then(res => {
     getOrderData();
-  }).catch(function (err) {
+  }).catch(err => {
     let errData = err.response.data;
     if (!errData.status) {
       console.log(errData.message);
     };
-  }).then(function () {
+  }).then(() => {
     popUpDiv.setAttribute('data-popUp', 'hidden');
   });
 };
@@ -138,11 +138,11 @@ function changePaid(id, status) {
 function renderChart() {
   let ary = [];
 
-  orderData.forEach(function (item) {
-    item.products.forEach(function (item) {
+  orderData.forEach(item => {
+    item.products.forEach(item => {
       let title = item.title;
       let totalPrice = item.price * item.quantity;
-      let aryCheck = ary.some(function (product) { return product.title == title });
+      let aryCheck = ary.some(product => product.title == title);
 
       if (ary.length === 0 || !aryCheck) {
         let obj = {};
@@ -150,7 +150,7 @@ function renderChart() {
         obj.revenue = totalPrice;
         ary.push(obj);
       } else {
-        ary.forEach(function (item) {
+        ary.forEach(item => {
           if (item.title === title) {
             item.revenue += totalPrice;
           };
@@ -159,7 +159,7 @@ function renderChart() {
     });
   });
 
-  let newAry = ary.sort(function (a, b) { return b.revenue - a.revenue });
+  let newAry = ary.sort((a, b) => b.revenue - a.revenue);
 
   let otherObj = {
     title: '其他',
@@ -168,7 +168,7 @@ function renderChart() {
 
 
   let chartData = [];
-  newAry.forEach(function (item, index) {
+  newAry.forEach((item, index) => {
     let chartAry = [];
     if (index < 3) {
       chartAry.push(item.title, item.revenue);
@@ -181,11 +181,11 @@ function renderChart() {
   chartData.push([otherObj.title, otherObj.revenue]);
 
   // 根據順序上圖表顏色
-  chartData = chartData.sort(function (a, b) { return b[1] - a[1] });
+  chartData = chartData.sort((a, b) => b[1] - a[1]);
 
   const colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
   let colorObj = {};
-  chartData.forEach(function (item, index) {
+  chartData.forEach((item, index) => {
     colorObj[item[0]] = colorData[index];
   });
 
@@ -226,10 +226,10 @@ function doubleCheckMsg(e) {
       `;
   } else {
     orderId = e.target.dataset.id;
-    target = orderData.filter(function (item) { return item.id == orderId });
+    target = orderData.filter(item => item.id == orderId);
     target = target[0];
     let productStr = '';
-    target.products.forEach(function (item) {
+    target.products.forEach(item => {
       productStr += `<li>${item.title}</li>`;
     });
 
@@ -277,7 +277,7 @@ function doubleCheckMsg(e) {
     };
   };
   popUpMsg.innerHTML = str;
-  popUpDiv.addEventListener('click', function (e) {
+  popUpDiv.addEventListener('click', e => {
     let targetJs = e.target.dataset.js;
     let btnProp = e.target.dataset.prop;
     if (targetJs !== 'popUpDiv' && targetJs !== 'dblCheckBtn') {

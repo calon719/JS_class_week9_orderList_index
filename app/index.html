@@ -40,12 +40,12 @@ current: orderList
 
 <main>
   <div class="container">
-    <section class="productChart mt-15 mb-14 flex flex-col items-center justify-center">
+    <section class="productChart mt-15 mb-14 flex flex-col items-center justify-center" data-hasOrder="hidden">
       <h2 class="text-3xl mb-8 text-center">全品項營收比重</h2>
-      <div id="productRevenue" data-hasOrder="hidden"></div>
+      <div id="productRevenue"></div>
     </section>
 
-    <div class="loading py-12 justify-center" data-loading="show">
+    <div class="loading py-24 justify-center" data-loading="show">
       <div class="lds-ring">
         <div></div>
         <div></div>
@@ -54,7 +54,7 @@ current: orderList
       </div>
     </div>
 
-    <p class="justify-center text-lg py-24" data-hasOrder="hidden">尚未有任何訂單</p>
+    <p class="justify-center text-lg py-36" data-hasOrder="hidden">尚未有任何訂單</p>
     <section class="orderTable flex flex-col mb-27" data-hasOrder="hidden">
       <button
         class="ml-auto mb-3 py-2.5 px-5 border rounded hover:bg-danger text-lg hover:text-white transition duration-500"
@@ -93,7 +93,7 @@ current: orderList
   const offcanvas = document.querySelector('[data-js="offcanvas"]');
   const childrenNodes = document.querySelectorAll('[data-js="offcanvas"] li');
 
-  offcanvasBurger.addEventListener('click', function (e) {
+  offcanvasBurger.addEventListener('click', e => {
     let offcanvasBurgerStatus = offcanvasBurger.getAttribute('data-offcanvasBurger');
     let headerHeight = headerDiv.offsetHeight;
     offcanvas.style.top = `${headerHeight}px`;

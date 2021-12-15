@@ -34,7 +34,6 @@ function getOrderData() {
   axios.get(`${baseUrl}/${adminOrder_path}`, tokenObj).then(res => {
     orderData = res.data.orders;
     renderOrderList();
-    renderChart();
   }).catch(err => {
     let errData = err.response.data;
     if (!errData.status) {
@@ -89,6 +88,7 @@ function renderOrderList() {
     `
     });
     orderList.innerHTML = str;
+    renderChart();
   };
 };
 

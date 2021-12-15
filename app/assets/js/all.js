@@ -11,15 +11,17 @@ const tokenObj = {
 };
 
 // DOM
+const changeChartBtnDiv = document.querySelector('[data-js="changeChartBtnDiv"]');
+const chartSection = document.querySelector('.productChart');
 const orderList = document.querySelector('[data-js="orderList"]');
 const orderTable = document.querySelector('.orderTable');
 const popUpDiv = document.querySelector('[data-js="popUpDiv"]');
-const chartSection = document.querySelector('.productChart');
 
 // data
-let orderData;
+let orderData = [];
 
 // event
+changeChartBtnDiv.addEventListener('click', changeChart);
 orderTable.addEventListener('click', doubleCheckMsg);
 
 init();
@@ -93,7 +95,8 @@ function renderOrderList() {
 function deleteOrder(id, btnProp) {
   if (btnProp === 'deleteAll') {
     axios.delete(`${baseUrl}/${adminOrder_path}`, tokenObj).then(res => {
-      getOrderData();
+      orderData = res.data.orders;
+      renderOrderList();
     }).catch(err => {
       let errData = err.response.data;
       if (!errData.status) {
@@ -104,7 +107,8 @@ function deleteOrder(id, btnProp) {
     });
   } else if (btnProp === 'deleteOne') {
     axios.delete(`${baseUrl}/${adminOrder_path}/${id}`, tokenObj).then(res => {
-      getOrderData();
+      orderData = res.data.orders;
+      renderOrderList();
     }).catch(err => {
       let errData = err.response.data;
       if (!errData.status) {
@@ -136,70 +140,132 @@ function changePaid(id, status) {
 };
 
 function renderChart() {
-  let ary = [];
+  let productTitleTemporaryAry = [];
+  let categoryChartData = [];
 
   orderData.forEach(item => {
-    item.products.forEach(item => {
-      let title = item.title;
-      let totalPrice = item.price * item.quantity;
-      let aryCheck = ary.some(product => product.title == title);
-
-      if (ary.length === 0 || !aryCheck) {
-        let obj = {};
-        obj.title = title;
-        obj.revenue = totalPrice;
-        ary.push(obj);
-      } else {
-        ary.forEach(item => {
-          if (item.title === title) {
-            item.revenue += totalPrice;
-          };
-        });
-      };
-    });
+    filterChartData(item.products, 'category', categoryChartData);
+    filterChartData(item.products, 'title', productTitleTemporaryAry);
   });
 
-  let newAry = ary.sort((a, b) => b.revenue - a.revenue);
+  // 處理 全品項營收比重 資料 
+  // 從大排到小
+  productTitleTemporaryAry = productTitleTemporaryAry.sort((a, b) => b.revenue - a.revenue);
 
+  let productTitleChartData = [];
+  // 收入排名四（含）之後的資料都算入「其他」
   let otherObj = {
-    title: '其他',
+    label: '其他',
     revenue: 0
   };
-
-
-  let chartData = [];
-  newAry.forEach((item, index) => {
-    let chartAry = [];
+  productTitleTemporaryAry.forEach((item, index) => {
     if (index < 3) {
-      chartAry.push(item.title, item.revenue);
-      chartData.push(chartAry);
+      productTitleChartData.push(item);
     } else {
       otherObj.revenue += item.revenue;
     };
   });
+  if (productTitleTemporaryAry.length >= 3) {
+    productTitleChartData.push(otherObj);
+  };
 
-  chartData.push([otherObj.title, otherObj.revenue]);
+  categoryChartData = toC3PieChartFormat(categoryChartData);
+  productTitleChartData = toC3PieChartFormat(productTitleChartData);
 
   // 根據順序上圖表顏色
-  chartData = chartData.sort((a, b) => b[1] - a[1]);
+  productTitleChartData = productTitleChartData.sort((a, b) => b[1] - a[1]);
 
   const colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
-  let colorObj = {};
-  chartData.forEach((item, index) => {
-    colorObj[item[0]] = colorData[index];
+  let productTitleColors = {};
+  let categoryColors = {};
+  categoryChartData.forEach((item, index) => {
+    categoryColors[item[0]] = colorData[index + 1];
+  });
+  productTitleChartData.forEach((item, index) => {
+    productTitleColors[item[0]] = colorData[index];
   });
 
-  let chart = c3.generate({
-    bindto: '#productRevenue',
+  const productCategoryChart = c3.generate({
+    bindto: '#categoryRevenueChart',
     data: {
-      columns: chartData,
+      columns: categoryChartData,
       type: 'pie',
-      colors: colorObj
+      colors: categoryColors
     },
     size: {
       height: 400,
       width: 400
     },
+  });
+
+  const productTitleChart = c3.generate({
+    bindto: '#productRevenueChart',
+    data: {
+      columns: productTitleChartData,
+      type: 'pie',
+      colors: productTitleColors
+    },
+    size: {
+      height: 400,
+      width: 400
+    },
+  });
+};
+
+function filterChartData(ary, key, outputData) {
+  ary.forEach(item => {
+    const label = item[key];
+    const totalPrice = item.price * item.quantity;
+    const aryCheck = outputData.some(item => item.label === label);
+    if (outputData.length === 0 || !aryCheck) {
+      let obj = {};
+      obj.label = label;
+      obj.revenue = totalPrice;
+      outputData.push(obj)
+    } else {
+      outputData.forEach(item => {
+        item.revenue += totalPrice;
+      });
+    };
+  });
+};
+
+
+// 整理成 C3.js Pie 格式 [['label_1', 數量], ['label_2', 數量], ....]
+function toC3PieChartFormat(data) {
+  // 由大排到小，chart 顏色要用
+  data = data.sort((a, b) => b.revenue - a.revenue);
+  let chartFormatData = [];
+  data.forEach(item => {
+    let ary = [];
+    ary.push(item.label, item.revenue);
+    chartFormatData.push(ary);
+  });
+  return chartFormatData;
+};
+
+function changeChart(e) {
+  const btnStatus = e.target.getAttribute('data-chartBtn');
+  if (e.target.nodeName !== 'BUTTON' || btnStatus === 'active') { return };
+
+  const chartName = e.target.getAttribute('data-chartName');
+  const chartDivs = document.querySelectorAll('[data-chart]');
+  const btns = document.querySelectorAll('[data-js="chartBtn"]');
+
+  btns.forEach(item => {
+    if (item.getAttribute('data-chartName') === chartName) {
+      item.setAttribute('data-chartBtn', 'active');
+    } else {
+      item.setAttribute('data-chartBtn', 'default');
+    }
+  });
+
+  chartDivs.forEach(item => {
+    if (item.getAttribute('data-js') === chartName) {
+      item.setAttribute('data-chart', 'show');
+    } else {
+      item.setAttribute('data-chart', 'hidden');
+    }
   });
 };
 
@@ -290,5 +356,5 @@ function doubleCheckMsg(e) {
     } else if (btnProp === 'deleteOne' || btnProp === 'deleteAll') {
       deleteOrder(orderId, btnProp);
     };
-  });
+  }, { once: true });
 };

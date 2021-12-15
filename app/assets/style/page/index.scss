@@ -6,9 +6,19 @@
 [data-js="offcanvas"]{
   @apply h-0 overflow-hidden;
 }
+
 // js 樣式
 [data-offcanvasBurger="active"]{
   @apply text-primary;
+}
+[data-chartBtn="active"]{
+  @apply opacity-75 cursor-default;
+}
+[data-chart="show"]{
+  @apply block;
+}
+[data-chart="hidden"]{
+  @apply hidden;
 }
 [data-hasOrder="show"]{
   @apply flex;

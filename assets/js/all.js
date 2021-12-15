@@ -170,32 +170,20 @@ function renderChart() {
     ;
   });
 
-  if (productTitleTemporaryAry.length >= 3) {
+  if (productTitleTemporaryAry.length > 3) {
     productTitleChartData.push(otherObj);
   }
 
   ;
   categoryChartData = toC3PieChartFormat(categoryChartData);
-  productTitleChartData = toC3PieChartFormat(productTitleChartData); // 根據順序上圖表顏色
-
-  productTitleChartData = productTitleChartData.sort(function (a, b) {
-    return b[1] - a[1];
-  });
-  var colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
-  var productTitleColors = {};
-  var categoryColors = {};
-  categoryChartData.forEach(function (item, index) {
-    categoryColors[item[0]] = colorData[index + 1];
-  });
-  productTitleChartData.forEach(function (item, index) {
-    productTitleColors[item[0]] = colorData[index];
-  });
+  productTitleChartData = toC3PieChartFormat(productTitleChartData);
+  console.log(productTitleChartData, categoryChartData);
   var productCategoryChart = c3.generate({
     bindto: '#categoryRevenueChart',
     data: {
-      columns: categoryChartData,
+      columns: categoryChartData.chartData,
       type: 'pie',
-      colors: categoryColors
+      colors: categoryChartData.chartColor
     },
     size: {
       height: 400,
@@ -205,9 +193,9 @@ function renderChart() {
   var productTitleChart = c3.generate({
     bindto: '#productRevenueChart',
     data: {
-      columns: productTitleChartData,
+      columns: productTitleChartData.chartData,
       type: 'pie',
-      colors: productTitleColors
+      colors: productTitleChartData.chartColor
     },
     size: {
       height: 400,
@@ -248,11 +236,25 @@ function toC3PieChartFormat(data) {
   data = data.sort(function (a, b) {
     return b.revenue - a.revenue;
   });
-  var chartFormatData = [];
+  var chartFormatData = {
+    chartData: [],
+    chartColor: {}
+  };
   data.forEach(function (item) {
     var ary = [];
     ary.push(item.label, item.revenue);
-    chartFormatData.push(ary);
+    chartFormatData.chartData.push(ary);
+  }); // 根據順序上圖表顏色
+
+  var colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
+  chartFormatData.chartData.forEach(function (item, index) {
+    if (data.length > 3) {
+      chartFormatData.chartColor[item[0]] = colorData[index];
+    } else {
+      chartFormatData.chartColor[item[0]] = colorData[index + 1];
+    }
+
+    ;
   });
   return chartFormatData;
 }

@@ -34,6 +34,7 @@ function getOrderData() {
   axios.get(`${baseUrl}/${adminOrder_path}`, tokenObj).then(res => {
     orderData = res.data.orders;
     renderOrderList();
+    renderChart();
   }).catch(err => {
     let errData = err.response.data;
     if (!errData.status) {
@@ -88,7 +89,6 @@ function renderOrderList() {
     `
     });
     orderList.innerHTML = str;
-    renderChart();
   };
 };
 
@@ -128,7 +128,8 @@ function changePaid(id, status) {
     }
   };
   axios.put(`${baseUrl}/${adminOrder_path}`, obj, tokenObj).then(res => {
-    getOrderData();
+    orderData = res.data.orders;
+    renderOrderList();
   }).catch(err => {
     let errData = err.response.data;
     if (!errData.status) {

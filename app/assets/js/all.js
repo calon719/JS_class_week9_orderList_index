@@ -166,32 +166,22 @@ function renderChart() {
       otherObj.revenue += item.revenue;
     };
   });
-  if (productTitleTemporaryAry.length >= 3) {
+  if (productTitleTemporaryAry.length > 3) {
     productTitleChartData.push(otherObj);
   };
 
   categoryChartData = toC3PieChartFormat(categoryChartData);
   productTitleChartData = toC3PieChartFormat(productTitleChartData);
 
-  // 根據順序上圖表顏色
-  productTitleChartData = productTitleChartData.sort((a, b) => b[1] - a[1]);
 
-  const colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
-  let productTitleColors = {};
-  let categoryColors = {};
-  categoryChartData.forEach((item, index) => {
-    categoryColors[item[0]] = colorData[index + 1];
-  });
-  productTitleChartData.forEach((item, index) => {
-    productTitleColors[item[0]] = colorData[index];
-  });
+  console.log(productTitleChartData, categoryChartData)
 
   const productCategoryChart = c3.generate({
     bindto: '#categoryRevenueChart',
     data: {
-      columns: categoryChartData,
+      columns: categoryChartData.chartData,
       type: 'pie',
-      colors: categoryColors
+      colors: categoryChartData.chartColor
     },
     size: {
       height: 400,
@@ -202,9 +192,9 @@ function renderChart() {
   const productTitleChart = c3.generate({
     bindto: '#productRevenueChart',
     data: {
-      columns: productTitleChartData,
+      columns: productTitleChartData.chartData,
       type: 'pie',
-      colors: productTitleColors
+      colors: productTitleChartData.chartColor
     },
     size: {
       height: 400,
@@ -236,12 +226,27 @@ function filterChartData(ary, key, outputData) {
 function toC3PieChartFormat(data) {
   // 由大排到小，chart 顏色要用
   data = data.sort((a, b) => b.revenue - a.revenue);
-  let chartFormatData = [];
+  let chartFormatData = {
+    chartData: [],
+    chartColor: {}
+  };
   data.forEach(item => {
     let ary = [];
     ary.push(item.label, item.revenue);
-    chartFormatData.push(ary);
+    chartFormatData.chartData.push(ary);
   });
+
+  // 根據順序上圖表顏色
+  const colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
+
+  chartFormatData.chartData.forEach((item, index) => {
+    if (data.length > 3) {
+      chartFormatData.chartColor[item[0]] = colorData[index];
+    } else {
+      chartFormatData.chartColor[item[0]] = colorData[index + 1];
+    };
+  });
+
   return chartFormatData;
 };
 

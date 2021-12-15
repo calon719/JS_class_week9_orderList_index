@@ -12,13 +12,15 @@ var tokenObj = {
   }
 }; // DOM
 
+var changeChartBtnDiv = document.querySelector('[data-js="changeChartBtnDiv"]');
+var chartSection = document.querySelector('.productChart');
 var orderList = document.querySelector('[data-js="orderList"]');
 var orderTable = document.querySelector('.orderTable');
-var popUpDiv = document.querySelector('[data-js="popUpDiv"]');
-var chartSection = document.querySelector('.productChart'); // data
+var popUpDiv = document.querySelector('[data-js="popUpDiv"]'); // data
 
-var orderData; // event
+var orderData = []; // event
 
+changeChartBtnDiv.addEventListener('click', changeChart);
 orderTable.addEventListener('click', doubleCheckMsg);
 init();
 
@@ -80,7 +82,8 @@ function renderOrderList() {
 function deleteOrder(id, btnProp) {
   if (btnProp === 'deleteAll') {
     axios["delete"]("".concat(baseUrl, "/").concat(adminOrder_path), tokenObj).then(function (res) {
-      getOrderData();
+      orderData = res.data.orders;
+      renderOrderList();
     })["catch"](function (err) {
       var errData = err.response.data;
 
@@ -94,7 +97,8 @@ function deleteOrder(id, btnProp) {
     });
   } else if (btnProp === 'deleteOne') {
     axios["delete"]("".concat(baseUrl, "/").concat(adminOrder_path, "/").concat(id), tokenObj).then(function (res) {
-      getOrderData();
+      orderData = res.data.orders;
+      renderOrderList();
     })["catch"](function (err) {
       var errData = err.response.data;
 
@@ -138,73 +142,145 @@ function changePaid(id, status) {
 ;
 
 function renderChart() {
-  var ary = [];
+  var productTitleTemporaryAry = [];
+  var categoryChartData = [];
   orderData.forEach(function (item) {
-    item.products.forEach(function (item) {
-      var title = item.title;
-      var totalPrice = item.price * item.quantity;
-      var aryCheck = ary.some(function (product) {
-        return product.title == title;
-      });
+    filterChartData(item.products, 'category', categoryChartData);
+    filterChartData(item.products, 'title', productTitleTemporaryAry);
+  }); // 處理 全品項營收比重 資料 
+  // 從大排到小
 
-      if (ary.length === 0 || !aryCheck) {
-        var obj = {};
-        obj.title = title;
-        obj.revenue = totalPrice;
-        ary.push(obj);
-      } else {
-        ary.forEach(function (item) {
-          if (item.title === title) {
-            item.revenue += totalPrice;
-          }
-
-          ;
-        });
-      }
-
-      ;
-    });
-  });
-  var newAry = ary.sort(function (a, b) {
+  productTitleTemporaryAry = productTitleTemporaryAry.sort(function (a, b) {
     return b.revenue - a.revenue;
   });
+  var productTitleChartData = []; // 收入排名四（含）之後的資料都算入「其他」
+
   var otherObj = {
-    title: '其他',
+    label: '其他',
     revenue: 0
   };
-  var chartData = [];
-  newAry.forEach(function (item, index) {
-    var chartAry = [];
-
+  productTitleTemporaryAry.forEach(function (item, index) {
     if (index < 3) {
-      chartAry.push(item.title, item.revenue);
-      chartData.push(chartAry);
+      productTitleChartData.push(item);
     } else {
       otherObj.revenue += item.revenue;
     }
 
     ;
   });
-  chartData.push([otherObj.title, otherObj.revenue]); // 根據順序上圖表顏色
 
-  chartData = chartData.sort(function (a, b) {
+  if (productTitleTemporaryAry.length >= 3) {
+    productTitleChartData.push(otherObj);
+  }
+
+  ;
+  categoryChartData = toC3PieChartFormat(categoryChartData);
+  productTitleChartData = toC3PieChartFormat(productTitleChartData); // 根據順序上圖表顏色
+
+  productTitleChartData = productTitleChartData.sort(function (a, b) {
     return b[1] - a[1];
   });
   var colorData = ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'];
-  var colorObj = {};
-  chartData.forEach(function (item, index) {
-    colorObj[item[0]] = colorData[index];
+  var productTitleColors = {};
+  var categoryColors = {};
+  categoryChartData.forEach(function (item, index) {
+    categoryColors[item[0]] = colorData[index + 1];
   });
-  var chart = c3.generate({
-    bindto: '#productRevenue',
+  productTitleChartData.forEach(function (item, index) {
+    productTitleColors[item[0]] = colorData[index];
+  });
+  var productCategoryChart = c3.generate({
+    bindto: '#categoryRevenueChart',
     data: {
-      columns: chartData,
+      columns: categoryChartData,
       type: 'pie',
-      colors: colorObj
+      colors: categoryColors
     },
     size: {
       height: 400,
       width: 400
+    }
+  });
+  var productTitleChart = c3.generate({
+    bindto: '#productRevenueChart',
+    data: {
+      columns: productTitleChartData,
+      type: 'pie',
+      colors: productTitleColors
+    },
+    size: {
+      height: 400,
+      width: 400
+    }
+  });
+}
+
+;
+
+function filterChartData(ary, key, outputData) {
+  ary.forEach(function (item) {
+    var label = item[key];
+    var totalPrice = item.price * item.quantity;
+    var aryCheck = outputData.some(function (item) {
+      return item.label === label;
+    });
+
+    if (outputData.length === 0 || !aryCheck) {
+      var obj = {};
+      obj.label = label;
+      obj.revenue = totalPrice;
+      outputData.push(obj);
+    } else {
+      outputData.forEach(function (item) {
+        item.revenue += totalPrice;
+      });
+    }
+
+    ;
+  });
+}
+
+; // 整理成 C3.js Pie 格式 [['label_1', 數量], ['label_2', 數量], ....]
+
+function toC3PieChartFormat(data) {
+  // 由大排到小，chart 顏色要用
+  data = data.sort(function (a, b) {
+    return b.revenue - a.revenue;
+  });
+  var chartFormatData = [];
+  data.forEach(function (item) {
+    var ary = [];
+    ary.push(item.label, item.revenue);
+    chartFormatData.push(ary);
+  });
+  return chartFormatData;
+}
+
+;
+
+function changeChart(e) {
+  var btnStatus = e.target.getAttribute('data-chartBtn');
+
+  if (e.target.nodeName !== 'BUTTON' || btnStatus === 'active') {
+    return;
+  }
+
+  ;
+  var chartName = e.target.getAttribute('data-chartName');
+  var chartDivs = document.querySelectorAll('[data-chart]');
+  var btns = document.querySelectorAll('[data-js="chartBtn"]');
+  btns.forEach(function (item) {
+    if (item.getAttribute('data-chartName') === chartName) {
+      item.setAttribute('data-chartBtn', 'active');
+    } else {
+      item.setAttribute('data-chartBtn', 'default');
+    }
+  });
+  chartDivs.forEach(function (item) {
+    if (item.getAttribute('data-js') === chartName) {
+      item.setAttribute('data-chart', 'show');
+    } else {
+      item.setAttribute('data-chart', 'hidden');
     }
   });
 }
@@ -266,6 +342,8 @@ function doubleCheckMsg(e) {
     }
 
     ;
+  }, {
+    once: true
   });
 }
 

@@ -62,8 +62,22 @@
 <main>
   <div class="container">
     <section class="productChart mt-15 mb-14 flex flex-col items-center justify-center" data-hasOrder="hidden">
-      <h2 class="text-3xl mb-8 text-center">全品項營收比重</h2>
-      <div id="productRevenue"></div>
+      <div class="mb-8 self-start" data-js="changeChartBtnDiv">
+        <button class="text-white bg-secondary rounded py-2 px-4 hover:opacity-75 mr-2" data-js="chartBtn"
+          data-chartName="categoryRevenue" data-chartBtn="active">全產品類別營收比重</button>
+        <button class="text-white bg-secondary rounded py-2 px-4 hover:opacity-75 mr-2" data-js="chartBtn"
+          data-chartName="productRevenue" data-chartBtn="default">全品項營收比重</button>
+      </div>
+
+      <div class="categoryRevenue" data-js="categoryRevenue" data-chart="show">
+        <h2 class="text-3xl mb-8 text-center">全產品類別營收比重</h2>
+        <div id="categoryRevenueChart"></div>
+      </div>
+
+      <div class="productRevenue" data-js="productRevenue" data-chart="hidden">
+        <h2 class="text-3xl mb-8 text-center">全品項營收比重</h2>
+        <div id="productRevenueChart"></div>
+      </div>
     </section>
 
     <div class="loading py-24 justify-center" data-loading="show">

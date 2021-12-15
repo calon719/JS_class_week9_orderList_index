@@ -16,6 +16,19 @@
   color: rgba(106, 51, 248, var(--tw-text-opacity));
 }
 
+[data-chartBtn="active"] {
+  cursor: default;
+  opacity: 0.75;
+}
+
+[data-chart="show"] {
+  display: block;
+}
+
+[data-chart="hidden"] {
+  display: none;
+}
+
 [data-hasOrder="show"] {
   display: flex;
 }
